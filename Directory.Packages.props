@@ -1,0 +1,51 @@
+<Project>
+  <PropertyGroup>
+    <!-- Enable central package management, https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
+  <ItemGroup Label="Data access">
+    <PackageVersion Include="Dapper" Version="2.1.66" />
+    <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+    <PackageVersion Include="dbup-sqlserver" Version="6.0.4" />
+  </ItemGroup>
+
+  <ItemGroup Label="ASP.NET Core">
+    <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Blazor WebAssembly">
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.2" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.Authorization" Version="9.0.2" />
+    <PackageVersion Include="MudBlazor" Version="8.2.0" />
+    <PackageVersion Include="Blazored.LocalStorage" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup Label="Cross-cutting">
+    <PackageVersion Include="FluentValidation" Version="11.11.0" />
+    <PackageVersion Include="FlectionExtensions" Version="11.11.0" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
+    <PackageVersion Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.2" />
+    <PackageVersion Include="Mition.Binder" Version="9.0.2" />
+    <PackageVersion Include="MionfigurationExtensions" Version="9.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Label="Testing">
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="FluentAssertions" Version="6.12.2" />
+    <PackageVersion Include="NSubstitute" Version="5.3.0" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.2" />
+    <PackageVersion Include="Testcontainers.MsSql" Version="4.1.0" />
+  </ItemGroup>
+
+</Project>

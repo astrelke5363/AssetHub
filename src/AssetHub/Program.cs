@@ -1,28 +1,33 @@
-using AssetHub.Components;
+using AssetHub.Web;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor;
+using MudBlazor.Services;
 
-var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-var app = builder.Build();
+builder.RootComponents.Add<App>("#app");
+builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+//wwwroot/appsettings.json is fetched at startup. The container entrypoint rewrites it, so one
+//built image can be pointed at any environment without a rebuild.
+var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
+
+if (string.IsNullOrWhiteSpace(apiBaseUrl))
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    //Same-origin fallback: covers the case where the API is servered behind the same host.
+    apiBaseUrl = builder.HostEnvironment.BaseAddress;
 }
 
-app.UseHttpsRedirection();
+builder.Services.AddBlazoredLocalStorage();
+builder.Services.AddMudServices(config =>
+{
+    config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+    config.SnackbarConfiguration.PreventDuplicates = true;
+    config.SnackbarConfiguration.NewestOnTop = true;
+    config.SnackbarConfiguration.VisibleStateDuration = 5000;
+});
 
-
-app.UseAntiforgery();
-
-app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
-
-app.Run();
+await builder.Build().RunAsync();

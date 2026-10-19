@@ -53,8 +53,26 @@ To be decided.
 
 ## 7. Constraints and assumptions
 
-- Built with Blazor on .NET 9, backed by a relational database.
+- Built on .NET 9: a Blazor WebAssembly client and a separate HTTP API, backed by a relational
+  database.
 - One organization.
+
+### Decision: Blazor WebAssembly as the hosting model
+
+The client is a standalone Blazor WebAssembly app that runs entirely in the browser and talks to
+the API over HTTP. Blazor Server and the server-rendered Blazor Web App were not chosen.
+
+| Reason | What it means for AssetHub |
+|---|---|
+| The API is the only gate | Every rule and permission is enforced by the API. The client can hide a button for convenience, but the same request sent directly to the API gets the same answer, so a clean HTTP boundary keeps that honest. |
+| The API is a product in its own right | The API contract is a design document. Building the client against the same HTTP endpoints anyone else would call keeps that contract real and testable. |
+| The client sees contracts, not internals | The client references only the shared contract types (DTOs and enums). It cannot reach the database or business logic directly. |
+| No server connection per user | Blazor Server keeps a live connection and UI state on the server for every open tab. WebAssembly needs none, so a dropped connection doesn't lose the user's page. |
+| Simple to host | The built client is static files, served from any web server or CDN, separately from the API. |
+
+**Trade-offs accepted:** a larger first download (the .NET runtime is fetched once, then cached),
+and code in the browser can be inspected, so it must never hold secrets. Both are acceptable for an
+internal tool used by employees.
 - Every user is an employee with an account; there is no anonymous access.
 
 ## 8. Principal risks
