@@ -1,0 +1,71 @@
+@*
+	Navigation. Entries are hidden by role using AuthroizeView, so a Viewer is not shown links
+	that would only fail with a 403.
+*@
+
+<MudNavMenu Bordered="true">
+
+	<MudNavLink Href="" Match="NavLinkMatch.All"
+				Icon="@Icons.Material.Filled.Dashboard"
+				Title="Dashboard">
+		Dashboard
+	</MudNavLink>
+
+	<MudNavLink Href="assets" Match="NavLinkMatch.Prefix"
+				Icon="@Icons.Material.Filled.Inventory2"
+				Title="Assets">
+		Assets
+	</MudNavLink>
+
+	<MudNavLink Href="assignments" Match="NavLinkMatch.Prefix"
+				Icon="@Icons.Material.Filled.AssignmentInd"
+				Title="Assignments">
+		Assignments
+	</MudNavLink>
+
+	<MudNavLink Href="maintenance" Match="NavLinkMatch.Prefix"
+				Icon="@Icons.Material.Filled.Build"
+				Title="Maintenance">
+		Maintenance
+	</MudNavLink>
+
+	<AuthorizeView Roles="@ManagerRoles">
+		<Authorized>
+			<MudDivider Class="my-2" />
+
+			<MudNavGroup Title="Administration" Icon="@Icons.Material.Filled.Settings" Expanded="false">
+
+				<MudNavLink Href="lookups" Match="NavLinkMatch.Prefix"
+							Icon="@Icons.Material.Filled.Category"
+							Title="Reference Data">
+					Reference Data
+				</MudNavLink>
+
+				<MudNavLink Href="audit" Match="NavLinkMatch.Prefix"
+							Icon="@Icons.Material.Filled.History"
+							Title="Audit Trail">
+					Audit Trail
+				</MudNavLink>
+
+				<AuthorizeView Roles="@Roles.Administrator" Context="adminContext">
+					<Authorized>
+						<MudNavLink Href="users" Match="NavLinkMatch.Prefix"
+									Icon="@Icons.Material.Filled.People"
+									Title="Users">
+							Users
+						</MudNavLink>
+					</Authorized>
+				</AuthorizeView>
+
+			</MudNavGroup>
+		</Authorized>
+	</AuthorizeView>
+
+</MudNavMenu>
+
+@code {
+	/*
+	 * AuthroizeView takes a comma-separated string; building it from the constant
+	*/
+	private const string ManagerRoles = $"{Roles.Administrator},{Roles.AssetManager}";
+}

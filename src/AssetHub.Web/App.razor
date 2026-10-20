@@ -1,19 +1,55 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<CascadingAuthenticationState>
+	<Router AppAssembly="@typeof(Program).Assembly">
+		<Found Context="routeData">
+			@*AuthroizeRouteView enforces [Authorize] on page components.*@
+			<AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+				<NotAuthorized>
+					@if (context.User.Identity?.IsAuthenticated != true)
+					{
+						@*Not signed in: bounce to login, remembering where they were headed*@
+						<RedirectToLogin />
+					}
+					else
+					{
+						<MudContainer Class="mt-8" MaxWidth="MaxWidth.Small">
+							<MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">
+								<MudText Typo="Typo.h6">Not Authroized</MudText>
+								<MudText Typo="Typo.body2">
+									Your account does not have permission to view this page.
+									Ask an administrator if you think this is wrong.
+								</MudText>
+							</MudAlert>
+						</MudContainer>
+					}
+				</NotAuthorized>
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <base href="/" />
-    <link rel="stylesheet" href="@Assets["app.css"]" />
-    <link rel="stylesheet" href="@Assets["AssetHub.styles.css"]" />
-    <ImportMap />
-    <HeadOutlet />
-</head>
+				<Authorizing>
+					<MudProgressLinear Indeterminate="true" Color="Color.Primary" />
+				</Authorizing>
+			</AuthorizeRouteView>
 
-<body>
-    <Routes />
-    <script src="_framework/blazor.web.js"></script>
-</body>
+			<FocusOnNavigate RouteData="@routeData" Selector="h1" />
+		</Found>
 
-</html>
+		<NotFound>
+			<LayoutView Layout="@typeof(MainLayout)">
+				<MudContainer Class="mt-8" MaxWidth="MaxWidth.Small">
+					<MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">
+						<MudText Typo="Typo.h6">Page Not Found</MudText>
+						<MudText Typo="Typo.body2">
+							Sorry, but the page you requested could not be found.
+						</MudText>
+						<MudButton Href="/" Variant="Variant.Text" Color="Color.Primary" Class="mt-2">
+							Back to the dashboard
+						</MudButton>
+					</MudAlert>
+				</MudContainer>
+			</LayoutView>
+		</NotFound>
+	</Router>
+</CascadingAuthenticationState>
+
+<MudThemeProvider Theme="@AssetHubTheme.Default"/>
+<MudPopoverProvider />
+<MudDialogProvider ClossButton="true" MaxWidth="MaxWidth.Small" FullWidth="true"/>
+<MudSnackbarProvider />

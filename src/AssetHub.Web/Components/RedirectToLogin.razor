@@ -1,0 +1,16 @@
+@inject NavigationManager Navigation
+
+@code {
+	protected override void OnInitialized()
+	{
+		var returnUrl = Navigation.ToBaseRelativePath(Navigation.Uri);
+
+		//Avoid a redirect loop if this somehow renders while already on the login page.
+		if (!returnUrl.StartsWith("login", StringComparison.OrdinalIgnoreCase))
+		{
+			return;
+		}
+
+		Navigation.NavigateTo($"login?returnUrl={Uri.EscapeDataString(returnUrl)}", forceLoad: false);
+	}	
+}

@@ -3,9 +3,9 @@
 | **Document** | 02 — Requirements & Acceptance Criteria |
 | **Product** | AssetHub |
 | **Owner** | Andrew Strelke |
-| **Version** | 0.01 |
+| **Version** | 0.02 |
 | **Date Created** | 2026-09-08 |
-| **Date Updated** | 2026-10-18 |
+| **Date Updated** | 2026-10-20 |
 ---
 
 ## 1. How to read this
@@ -28,9 +28,11 @@ Each requirement has an id, a short statement and acceptance criteria (AC). This
 
 ## 2. Users and roles
 
-Every user signs in and holds one or more roles. Administrator is the only role defined so far; it can reach everything, including the Administration section (Reference data, Audit trail, Users).
+Every user signs in and holds one or more roles. The roles are Administrator, AssetManager, Technician and Viewer.
 
-What each other role can do is *TBD*.
+The Administration section shows Reference data and Audit trail to Administrators and AssetManagers, and Users to Administrators only. Hiding a link is a convenience; the API enforces the same rules.
+
+What each role can do beyond this is *TBD*.
 
 ---
 
@@ -44,6 +46,7 @@ What each other role can do is *TBD*.
 - **AC** After 5 failed attempts the account is locked for 15 minutes. Signing in while locked shows "This account is temporarily locked. Try again later." as a warning. The client recognizes this case by the code `auth_account_locked`, not by parsing the text.
 - **AC** A malformed email is a validation failure shown under the field, not an authentication failure.
 - **AC** No password strength rules are applied at sign-in.
+- **AC** A signed-out visitor who opens a page is sent to sign-in, and the page they asked for is kept as `returnUrl`.
 - **AC** After signing in, the user goes to `returnUrl` if it is a relative path, otherwise to the dashboard. An absolute URL is ignored so a crafted link cannot send the user to another site.
 
 **AUTH-02 — Stay signed in.**
@@ -65,6 +68,11 @@ What each other role can do is *TBD*.
 **AUTH-05 — See who I am.**
 
 - **AC** The user menu shows the signed-in user's name, email and role.
+
+**AUTH-06 — Pages I can't open.**
+
+- **AC** A signed-in user who opens a page their roles don't allow sees "Your account does not have permission to view this page."
+- **AC** An address that matches no page shows "Page not found" with a link back to the dashboard.
 
 ### 3.2 Asset register and lifecycle — `ASSET`
 

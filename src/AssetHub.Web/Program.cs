@@ -24,6 +24,7 @@ if (string.IsNullOrWhiteSpace(apiBaseUrl))
 }
 
 builder.Services.AddBlazoredLocalStorage();
+
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
@@ -33,6 +34,16 @@ builder.Services.AddMudServices(config =>
 });
 
 builder.Services.AddScoped<JwtAuthenticationStateProvider>();
+
+/*
+ * Both registration resolve the same scoped instance: components consume the framework's 
+ * AuthenticationStateProvider. CascadingAuthenticationState and AuthorizeView ask for the 
+ * base AuthenticationStateProvider type, so the app would fail at startup with "There is 
+ * no registered service of type AuthenticationStateProvider" without the following registration
+ */
+builder.Services.AddScoped<AuthenticationStateProvider>(sp =>
+    sp.GetRequiredService<JwtAuthenticationStateProvider>());
+
 builder.Services.AddAuthorizationCore();
 
 await builder.Build().RunAsync();

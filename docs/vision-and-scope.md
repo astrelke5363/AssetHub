@@ -3,9 +3,9 @@
 | **Document** | 01 — Vision & Scope |
 | **Product** | AssetHub |
 | **Owner** | Andrew Strelke |
-| **Version** | 0.01  |
+| **Version** | 0.02  |
 | **Date Created** | 2026-08-31 |
-| **Date Updated** | 2026-10-12 |
+| **Date Updated** | 2026-10-20 |
 ---
 
 ## 1. Problem
@@ -34,7 +34,9 @@ Users sign in with an email and password. Each user holds one or more roles.
 | Role | Primary job |
 |---|---|
 | **Administrator** | Runs the system, including user administration |
-| *Other roles* | To be defined |
+| **AssetManager** | To be defined |
+| **Technician** | To be defined |
+| **Viewer** | To be defined |
 
 ## 5. In scope
 
@@ -55,6 +57,7 @@ To be decided.
 
 - Built on .NET 9: a Blazor WebAssembly client and a separate HTTP API, backed by a relational
   database.
+- UI components from MudBlazor.
 - One organization.
 
 ### Decision: Blazor WebAssembly as the hosting model
