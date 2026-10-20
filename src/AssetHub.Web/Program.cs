@@ -1,5 +1,7 @@
 using AssetHub.Web;
+using AssetHub.Web.Services;
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor;
@@ -29,5 +31,8 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.NewestOnTop = true;
     config.SnackbarConfiguration.VisibleStateDuration = 5000;
 });
+
+builder.Services.AddScoped<JwtAuthenticationStateProvider>();
+builder.Services.AddAuthorizationCore();
 
 await builder.Build().RunAsync();
