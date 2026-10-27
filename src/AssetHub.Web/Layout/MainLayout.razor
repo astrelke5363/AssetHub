@@ -1,9 +1,79 @@
-﻿@inherits LayoutComponentBase
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@inject JwtAuthenticationStateProvider AuthStateProvider
 
-@Body
+<MudLayout>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+	<MudAppBar Elevation="1">
+		<MudIconButton Icon="@Icons.Material.Filled.Menu"
+		Color="Color.Inherit"
+		Edge="Edge.Start"
+		OnClick="@ToggleDrawer"
+		aria-label="Toggle navigation"/>
+
+
+		<MudIcon Icon="@Icons.Material.Filled.Inventory2" Class="mr-2"/>
+		<MudText Typo="Typo.h6">AssetHub</MudText>
+
+		<MudSpacer/>
+
+		<AuthorizeView>
+			<Authorized>
+				<MudTooltip Text="@RoleSummary(context)">
+					<MudChip T="string" Color="Color.Surface" Size="Size.Small" Icon="@Icons.Material.Filled.Person">
+						@context.User.Identity?.Name
+					</MudChip>
+				</MudTooltip>
+
+				<MudIconButton Icon="@Icons.Material.Filled.Logout"
+				Color="Color.Inherit"
+				OnClick="@SignOutAsync"
+				aria-label="Sign out"/>
+			</Authorized>
+		</AuthorizeView>
+	</MudAppBar>
+
+	<AuthorizeView>
+		<Authorized>
+			@*The nav drawer is pointless before sign-in, so it only renders once authenticated*@
+			<MudDrawer @bind-Open="_drawerOpen" Elevation="1" ClipMode="DrawerClipMode.Always">
+				<NavMenu />
+			</MudDrawer>
+		</Authorized>
+	</AuthorizeView>
+
+	<MudMainContent Class="pt-16 px-4">
+		<MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="mt-4">
+			@Body
+		</MudContainer>
+	</MudMainContent>
+
+</MudLayout>
+
+@code {
+	private bool _drawerOpen = true;
+
+	private void ToggleDrawer() => _drawerOpen = !_drawerOpen;
+
+	public static string RoleSummary(AuthenticationState state)
+	{
+		var roles = state.User.Claims
+			.Where(c => c.Type == System.Security.Claims.ClaimTypes.Role)
+			.Select(c => c.Value)
+			.ToList();
+
+		return roles.Count == 0 ? "No roles assigned" : string.Join(",", roles);
+	}
+
+	private async Task SignOutAsync()
+	{
+		try {
+			await AuthStateProvider.SignOutAsync();
+			Navigation.NavigateTo("login", forceLoad: false);
+		}
+		catch (HttpRequestException)
+		{
+			
+		}
+	}	
+}

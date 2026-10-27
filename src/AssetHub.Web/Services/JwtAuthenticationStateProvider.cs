@@ -15,5 +15,10 @@ public class JwtAuthenticationStateProvider : AuthenticationStateProvider
         var claims = new List<Claim> { nameClaim, emailClaim, roleClaim };
         var identity = new ClaimsIdentity(claims, "jwt", ClaimTypes.Name, ClaimTypes.Role);
         return new AuthenticationState(new ClaimsPrincipal(identity));
-    }   
+    }
+
+    public async Task SignOutAsync()
+    {
+        //TODO: Clear local tokens & change AuthenticationState to Anonymous role 
+    }
 }
