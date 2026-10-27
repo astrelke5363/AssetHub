@@ -3,9 +3,9 @@
 | **Document** | 01 — Vision & Scope |
 | **Product** | AssetHub |
 | **Owner** | Andrew Strelke |
-| **Version** | 0.02  |
+| **Version** | 0.03  |
 | **Date Created** | 2026-08-31 |
-| **Date Updated** | 2026-10-20 |
+| **Date Updated** | 2026-10-26 |
 ---
 
 ## 1. Problem
@@ -47,7 +47,7 @@ Users sign in with an email and password. Each user holds one or more roles.
 - **Reference data.** Categories, locations and manufacturers, which can be deactivated.
 - **Audit trail.** An append-only record of changes.
 - **Dashboard.** Content to be decided.
-- **Accounts and access.** Sign-in, sign-out, change password, roles and user administration.
+- **Accounts and access.** Sign-in with short-lived access tokens and rotating refresh tokens, sign-out, change password, roles and user administration.
 
 ## 6. Out of scope
 
@@ -59,6 +59,7 @@ To be decided.
   database.
 - UI components from MudBlazor.
 - One organization.
+- Every user is an employee with an account; there is no anonymous access.
 
 ### Decision: Blazor WebAssembly as the hosting model
 
@@ -76,7 +77,6 @@ the API over HTTP. Blazor Server and the server-rendered Blazor Web App were not
 **Trade-offs accepted:** a larger first download (the .NET runtime is fetched once, then cached),
 and code in the browser can be inspected, so it must never hold secrets. Both are acceptable for an
 internal tool used by employees.
-- Every user is an employee with an account; there is no anonymous access.
 
 ## 8. Principal risks
 
@@ -84,6 +84,8 @@ internal tool used by employees.
 |---|---|
 | Two people are recorded as holding the same asset | Enforce at the database, not only in application code |
 | Two requests create the same asset tag | A unique index on the asset tag decides the race |
+| A stolen refresh token grants indefinite access | Tokens are hashed at rest, single-use and rotating; reuse of a spent token revokes every refresh token the user holds |
+| Someone guesses a password by trying many | The account locks for 15 minutes after 5 consecutive failures |
 
 ## 9. Definition of done
 
